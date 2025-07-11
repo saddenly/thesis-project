@@ -1,11 +1,8 @@
 package com.rustem.eduthesis.infrastructure.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import net.minidev.json.annotate.JsonIgnore;
+import lombok.*;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -16,6 +13,8 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString(exclude = "users")
+@EqualsAndHashCode(exclude = "users")
 public class RoleEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY )
@@ -27,7 +26,7 @@ public class RoleEntity {
     @Column
     private String description;
 
-    @JsonIgnore
     @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
+    @JsonIgnore
     private Set<UserEntity> users = new HashSet<>();
 }
