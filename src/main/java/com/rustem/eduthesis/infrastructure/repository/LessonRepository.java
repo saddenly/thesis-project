@@ -3,6 +3,7 @@ package com.rustem.eduthesis.infrastructure.repository;
 import com.rustem.eduthesis.infrastructure.entity.CourseEntity;
 import com.rustem.eduthesis.infrastructure.entity.LessonEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -18,4 +19,9 @@ public interface LessonRepository extends JpaRepository<LessonEntity, Long> {
     List<LessonEntity> findByCourseIdOrderByOrderIndex(Long courseId);
 
     Optional<LessonEntity> findByIdAndCourseId(Long id, Long courseId);
+
+    @Query("SELECT MAX(l.orderIndex) FROM LessonEntity l WHERE l.course.id = :courseId")
+    Optional<Integer> findMaxOrderIndexByCourseId(Long courseId);
+
+    Boolean existsByIdAndCourseId(Long id, Long courseId);
 }

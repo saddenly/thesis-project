@@ -1,6 +1,8 @@
 package com.rustem.eduthesis.infrastructure.mapper;
 
 import com.rustem.eduthesis.api.dto.CourseResponse;
+import com.rustem.eduthesis.api.dto.SimpleLessonDTO;
+import com.rustem.eduthesis.api.dto.SimpleUserDTO;
 import com.rustem.eduthesis.infrastructure.entity.CourseEntity;
 import com.rustem.eduthesis.infrastructure.entity.LessonEntity;
 import com.rustem.eduthesis.infrastructure.entity.UserEntity;
@@ -12,7 +14,7 @@ import java.util.List;
 public class CourseMapper {
 
     public CourseResponse toResponse(CourseEntity courseEntity) {
-        List<CourseResponse.LessonDto> lessons = courseEntity.getLessons() != null ?
+        List<SimpleLessonDTO> lessons = courseEntity.getLessons() != null ?
                 courseEntity.getLessons().stream()
                         .map(this::toLessonDto)
                         .toList() : List.of();
@@ -28,12 +30,12 @@ public class CourseMapper {
                 .build();
     }
 
-    private CourseResponse.UserDto toUserDto(UserEntity userEntity) {
+    private SimpleUserDTO toUserDto(UserEntity userEntity) {
         if (userEntity == null) {
             return null; // Handle case where the user is not set
         }
 
-        return CourseResponse.UserDto.builder()
+        return SimpleUserDTO.builder()
                 .id(userEntity.getId())
                 .firstName(userEntity.getFirstName())
                 .lastName(userEntity.getLastName())
@@ -41,8 +43,8 @@ public class CourseMapper {
                 .build();
     }
 
-    private CourseResponse.LessonDto toLessonDto(LessonEntity lessonEntity) {
-        return CourseResponse.LessonDto.builder()
+    private SimpleLessonDTO toLessonDto(LessonEntity lessonEntity) {
+        return SimpleLessonDTO.builder()
                 .id(lessonEntity.getId())
                 .title(lessonEntity.getTitle())
                 .orderIndex(lessonEntity.getOrderIndex())

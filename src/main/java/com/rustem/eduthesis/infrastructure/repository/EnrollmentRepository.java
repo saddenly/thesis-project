@@ -4,6 +4,7 @@ import com.rustem.eduthesis.infrastructure.entity.EnrollmentEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -13,7 +14,7 @@ public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Lo
 
     Optional<EnrollmentEntity> findByStudentIdAndCourseId(Long studentId, Long courseId);
 
-    Optional<EnrollmentEntity> findByStudentId(Long studentId);
+    List<EnrollmentEntity> findByStudentId(Long studentId);
 
-    Optional<EnrollmentEntity> findByCourseId(Long courseId);
+    List<EnrollmentEntity> findByCourseId(Long courseId);
 }
