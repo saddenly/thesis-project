@@ -7,7 +7,7 @@ import com.rustem.eduthesis.infrastructure.entity.UserEntity;
 import com.rustem.eduthesis.infrastructure.exception.CourseNotFoundException;
 import com.rustem.eduthesis.infrastructure.exception.EnrollmentAlreadyExistsException;
 import com.rustem.eduthesis.infrastructure.exception.EnrollmentNotFoundException;
-import com.rustem.eduthesis.infrastructure.exception.UnauthorizedAccessException;
+import com.rustem.eduthesis.infrastructure.exception.NotStudentException;
 import com.rustem.eduthesis.infrastructure.mapper.EnrollmentMapper;
 import com.rustem.eduthesis.infrastructure.repository.CourseRepository;
 import com.rustem.eduthesis.infrastructure.repository.EnrollmentRepository;
@@ -37,11 +37,11 @@ public class EnrollmentService {
                 .anyMatch(role -> role.getName().equals("STUDENT"));
 
         if (!isStudent) {
-            throw new UnauthorizedAccessException("Only students can enroll in courses");
+            throw new NotStudentException("Only students can enroll in courses");
         }
 
         if (!course.isPublished()) {
-            throw new UnauthorizedAccessException("Cannot enroll in an unpublished course");
+            throw new CourseNotFoundException("Course not found with ID: " + courseId);
         }
 
         if (enrollmentRepo.existsByStudentIdAndCourseId(student.getId(), courseId)) {
