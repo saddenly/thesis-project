@@ -5,6 +5,7 @@ import com.rustem.eduthesis.api.dto.EnrollmentResponse;
 import com.rustem.eduthesis.api.dto.SimpleLessonDTO;
 import com.rustem.eduthesis.api.dto.SimpleUserDTO;
 import com.rustem.eduthesis.infrastructure.entity.EnrollmentEntity;
+import com.rustem.eduthesis.infrastructure.repository.EnrollmentRepository;
 import com.rustem.eduthesis.infrastructure.repository.ProgressRepository;
 import org.springframework.stereotype.Component;
 
@@ -12,9 +13,11 @@ import org.springframework.stereotype.Component;
 public class EnrollmentMapper {
 
     private final ProgressRepository progressRepository;
+    private final EnrollmentRepository enrollmentRepo;
 
-    public EnrollmentMapper(ProgressRepository progressRepository) {
+    public EnrollmentMapper(ProgressRepository progressRepository, EnrollmentRepository enrollmentRepo) {
         this.progressRepository = progressRepository;
+        this.enrollmentRepo = enrollmentRepo;
     }
 
     public EnrollmentResponse toResponse(EnrollmentEntity entity) {
@@ -44,6 +47,8 @@ public class EnrollmentMapper {
                                         .durationMinutes(lesson.getDurationMinutes())
                                         .build())
                                 .toList() : null)
+                        .enrollmentCount(enrollmentRepo.findByCourseId(
+                                        entity.getCourse().getId()).size())
                         .build() : null)
                 .enrolledAt(entity.getEnrolledAt())
                 .lastAccessedAt(entity.getLastAccessedAt())
