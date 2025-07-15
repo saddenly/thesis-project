@@ -30,6 +30,9 @@ public class LessonMapper {
                                 .build()
                                 : null)
                         .build())
+                .durationMinutes(entity.getDurationMinutes())
+                .createdAt(entity.getCreatedAt())
+                .updatedAt(entity.getUpdatedAt())
                 .build();
     }
 

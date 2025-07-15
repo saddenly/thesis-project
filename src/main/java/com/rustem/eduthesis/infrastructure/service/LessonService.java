@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -59,6 +60,8 @@ public class LessonService {
         LessonEntity lesson = lessonMapper.toEntity(lessonRequest);
         lesson.setCourse(courseEntity);
         lesson.setOrderIndex(orderIndex);
+        lesson.setCreatedAt(LocalDateTime.now());
+        lesson.setUpdatedAt(LocalDateTime.now());
 
         LessonEntity savedLesson = lessonRepo.save(lesson);
         return lessonMapper.toResponse(savedLesson);
@@ -77,9 +80,9 @@ public class LessonService {
         lesson.setDurationMinutes(lessonRequest.getDurationMinutes());
         lesson.setOrderIndex(lessonRequest.getOrderIndex() != null ? lessonRequest.getOrderIndex() : lesson.getOrderIndex());
         lesson.setAdditionalResources(lessonRequest.getAdditionalResources());
+        lesson.setUpdatedAt(LocalDateTime.now());
 
-        LessonEntity updatedLesson = lessonRepo.save(lesson);
-        return lessonMapper.toResponse(updatedLesson);
+        return lessonMapper.toResponse(lesson);
     }
 
     @Transactional
