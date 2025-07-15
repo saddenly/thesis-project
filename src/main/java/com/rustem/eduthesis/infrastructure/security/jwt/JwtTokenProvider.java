@@ -16,9 +16,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
+import java.util.*;
 
 @Slf4j
 @Component
@@ -95,11 +93,15 @@ public class JwtTokenProvider {
                 .parseClaimsJws(token)
                 .getBody();
 
-        Collection<? extends GrantedAuthority> authorities = Arrays
-                .stream(claims.get("auth").toString().split(","))
-                .filter(auth -> !auth.trim().isEmpty())
-                .map(SimpleGrantedAuthority::new)
-                .toList();
+        Collection<? extends GrantedAuthority> authorities;
+
+        if (claims.get("auth") instanceof List<?> authList) {
+            authorities = authList.stream()
+                    .map(auth -> new SimpleGrantedAuthority(auth.toString()))
+                    .toList();
+        } else {
+            authorities = Collections.emptyList();
+        }
 
         User principal = new User(claims.getSubject(), "", authorities);
         return new UsernamePasswordAuthenticationToken(principal, token, authorities);

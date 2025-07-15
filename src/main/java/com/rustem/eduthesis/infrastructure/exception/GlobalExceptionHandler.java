@@ -2,11 +2,14 @@ package com.rustem.eduthesis.infrastructure.exception;
 
 import com.rustem.eduthesis.api.dto.ErrorResponse;
 import jakarta.validation.ConstraintViolationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -19,6 +22,8 @@ import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -226,10 +231,27 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
     }
 
+    @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
+    @ResponseStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
+    public ResponseEntity<ErrorResponse> handleHttpMediaTypeNotSupportedException(
+            HttpMediaTypeNotSupportedException ex, WebRequest request) {
+
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.UNSUPPORTED_MEDIA_TYPE.value())
+                .error("Unsupported Media Type")
+                .message("The requested media type is not supported")
+                .path(request.getDescription(false))
+                .build();
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+    }
+
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity<ErrorResponse> handleAllUncaughtException(
             Exception ex, WebRequest request) {
+        logger.error("An unexpected error occurred: {}", ex.getMessage(), ex);
 
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .timestamp(LocalDateTime.now())

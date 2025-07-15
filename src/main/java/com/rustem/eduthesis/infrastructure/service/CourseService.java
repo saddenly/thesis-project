@@ -30,10 +30,24 @@ public class CourseService {
     private final CourseMapper courseMapper;
 
     @Transactional(readOnly = true)
-    public List<CourseResponse> getAllPublishedCourse() {
+    public List<CourseResponse> getAllCourses() {
+        return courseRepo.findAll().stream()
+                .map(courseMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<CourseResponse> getAllPublishedCourses() {
         return courseRepo.findByPublishedTrue().stream()
                 .map(courseMapper::toResponse)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public CourseResponse getPublishedCourseById(Long id) {
+        CourseEntity courseEntity = courseRepo.findByIdAndPublishedTrue(id)
+                .orElseThrow(() -> new CourseNotFoundException("Published course not found with ID: " + id));
+        return courseMapper.toResponse(courseEntity);
     }
 
     @Transactional(readOnly = true)
@@ -74,6 +88,7 @@ public class CourseService {
         Optional.ofNullable(courseRequest.getImageUrl()).ifPresent(courseEntity::setImageUrl);
 
         CourseEntity updatedCourse = courseRepo.save(courseEntity);
+        updatedCourse.setUpdatedAt(LocalDateTime.now());
 
         return courseMapper.toResponse(updatedCourse);
     }

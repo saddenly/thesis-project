@@ -5,6 +5,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -24,7 +25,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             String jwt = getJwtFromRequest(request);
 
             if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
-                var auth = tokenProvider.getAuthentication(jwt);
+                Authentication auth = tokenProvider.getAuthentication(jwt);
                 SecurityContextHolder.getContext().setAuthentication(auth);
             }
         } catch (Exception e) {
