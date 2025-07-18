@@ -17,9 +17,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -38,7 +40,11 @@ public class CourseService {
 
     @Transactional(readOnly = true)
     public List<CourseResponse> getAllPublishedCourses() {
-        return courseRepo.findByPublishedTrue().stream()
+        // Fetch all published courses and create a new list to prevent concurrent modification
+        List<CourseEntity> publishedCourses = new ArrayList<>(courseRepo.findByPublishedTrue());
+
+        // Map to responses in a thread-safe way
+        return publishedCourses.stream()
                 .map(courseMapper::toResponse)
                 .collect(Collectors.toList());
     }
@@ -72,8 +78,8 @@ public class CourseService {
         CourseEntity savedCourseEntity = courseRepo.save(courseEntity);
 
         CourseResponse courseResponse = courseMapper.toResponse(savedCourseEntity);
-        courseResponse.setCreatedAt(savedCourseEntity.getCreatedAt());
-        courseResponse.setUpdatedAt(savedCourseEntity.getUpdatedAt());
+        courseResponse.setCreatedAt(LocalDateTime.now());
+        courseResponse.setUpdatedAt(LocalDateTime.now());
 
         return courseResponse;
     }

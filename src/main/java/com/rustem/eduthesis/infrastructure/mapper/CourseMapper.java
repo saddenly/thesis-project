@@ -6,18 +6,26 @@ import com.rustem.eduthesis.api.dto.SimpleUserDTO;
 import com.rustem.eduthesis.infrastructure.entity.CourseEntity;
 import com.rustem.eduthesis.infrastructure.entity.LessonEntity;
 import com.rustem.eduthesis.infrastructure.entity.UserEntity;
+import com.rustem.eduthesis.infrastructure.repository.CourseRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor
 public class CourseMapper {
+
+    private final CourseRepository courseRepository;
 
     public CourseResponse toResponse(CourseEntity courseEntity) {
         List<SimpleLessonDTO> lessons = courseEntity.getLessons() != null ?
                 courseEntity.getLessons().stream()
                         .map(this::toLessonDto)
                         .toList() : List.of();
+
+        int enrollmentCount = courseRepository.countEnrollmentsByCourseId(courseEntity.getId());
+
         return CourseResponse.builder()
                 .id(courseEntity.getId())
                 .title(courseEntity.getTitle())
@@ -26,7 +34,7 @@ public class CourseMapper {
                 .updatedAt(courseEntity.getUpdatedAt())
                 .instructor(toUserDto(courseEntity.getInstructor()))
                 .lessons(lessons)
-                .enrollmentCount(courseEntity.getEnrollments() != null ? courseEntity.getEnrollments().size() : 0)
+                .enrollmentCount(enrollmentCount)
                 .build();
     }
 

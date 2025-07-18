@@ -32,21 +32,16 @@ public class ProgressService {
 
         CourseEntity course = lesson.getCourse();
 
-        if (!enrollmentRepo.existsByStudentIdAndCourseId(student.getId(), course.getId())) {
-            throw new EnrollmentNotFoundException("You must be enrolled in the course to track progress");
-        }
-
         EnrollmentEntity enrollment = enrollmentRepo.findByStudentIdAndCourseId(student.getId(), course.getId())
                 .orElseThrow(() -> new EnrollmentNotFoundException("Enrollment not found"));
         enrollment.setLastAccessedAt(LocalDateTime.now());
-        enrollmentRepo.save(enrollment);
 
         ProgressEntity progress = progressRepo
                 .findByStudentIdAndLessonId(student.getId(), lessonId)
                 .orElse(ProgressEntity.builder()
                         .student(student)
                         .lesson(lesson)
-                        .completed(true)
+                        .course(course)
                         .build());
         if (!progress.isCompleted()) {
             progress.setCompleted(true);

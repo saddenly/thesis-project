@@ -102,7 +102,7 @@ INSERT INTO roles (name) VALUES ('ADMIN');
 
 -- Insert admin user
 INSERT INTO users (email, password, first_name, last_name, enabled, locked, created_at)
-VALUES ('admin@edu.com', '$2a$10$dXJ3SW6G7P50lGmMkkmwe.20cQQubK3.HZWzG3YB1tlRy.fqvM/BG', 'Admin', 'User', TRUE, FALSE, CURRENT_TIMESTAMP);
+VALUES ('admin@edu.com', '$2a$12$zzTf3uPsNOfRtV1yE1fldeXzkCjiLsfC/4Oi1JrK2ySObV5bPhEYe', 'Admin', 'User', TRUE, FALSE, CURRENT_TIMESTAMP);
 
 -- Assign an ADMIN role to an admin user
 INSERT INTO user_roles (user_id, role_id)
