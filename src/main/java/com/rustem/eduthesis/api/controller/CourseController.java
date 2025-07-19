@@ -6,6 +6,7 @@ import com.rustem.eduthesis.api.dto.MessageResponse;
 import com.rustem.eduthesis.infrastructure.service.CourseService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -49,7 +50,7 @@ public class CourseController {
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'INSTRUCTOR')")
     public ResponseEntity<CourseResponse> createCourse(@Valid @RequestBody CourseRequest courseRequest) {
-        return ResponseEntity.status(201).body(courseService.createCourse(courseRequest));
+        return ResponseEntity.status(HttpStatus.CREATED).body(courseService.createCourse(courseRequest));
     }
 
     @PutMapping("/{id}")

@@ -1,9 +1,6 @@
 package com.rustem.eduthesis.infrastructure.mapper;
 
-import com.rustem.eduthesis.api.dto.CourseResponse;
-import com.rustem.eduthesis.api.dto.EnrollmentResponse;
-import com.rustem.eduthesis.api.dto.SimpleLessonDTO;
-import com.rustem.eduthesis.api.dto.SimpleUserDTO;
+import com.rustem.eduthesis.api.dto.*;
 import com.rustem.eduthesis.infrastructure.entity.EnrollmentEntity;
 import com.rustem.eduthesis.infrastructure.repository.EnrollmentRepository;
 import com.rustem.eduthesis.infrastructure.repository.ProgressRepository;
@@ -13,11 +10,9 @@ import org.springframework.stereotype.Component;
 public class EnrollmentMapper {
 
     private final ProgressRepository progressRepository;
-    private final EnrollmentRepository enrollmentRepo;
 
     public EnrollmentMapper(ProgressRepository progressRepository, EnrollmentRepository enrollmentRepo) {
         this.progressRepository = progressRepository;
-        this.enrollmentRepo = enrollmentRepo;
     }
 
     public EnrollmentResponse toResponse(EnrollmentEntity entity) {
@@ -29,26 +24,18 @@ public class EnrollmentMapper {
                         .firstName(entity.getStudent().getFirstName())
                         .lastName(entity.getStudent().getLastName())
                         .build() : null)
-                .course(entity.getCourse() != null ? CourseResponse.builder()
+                .course(entity.getCourse() != null ? SimpleCourseDTO.builder()
                         .id(entity.getCourse().getId())
                         .title(entity.getCourse().getTitle())
                         .description(entity.getCourse().getDescription())
-                        .instructor(SimpleUserDTO.builder()
+                        .createdAt(entity.getCourse().getCreatedAt())
+                        .updatedAt(entity.getCourse().getUpdatedAt())
+                        .instructor(entity.getCourse().getInstructor() != null ? SimpleUserDTO.builder()
                                 .id(entity.getCourse().getInstructor().getId())
-                                .email(entity.getCourse().getInstructor().getEmail())
                                 .firstName(entity.getCourse().getInstructor().getFirstName())
                                 .lastName(entity.getCourse().getInstructor().getLastName())
-                                .build())
-                        .lessons(entity.getCourse().getLessons() != null ? entity.getCourse().getLessons().stream()
-                                .map(lesson -> SimpleLessonDTO.builder()
-                                        .id(lesson.getId())
-                                        .title(lesson.getTitle())
-                                        .orderIndex(lesson.getOrderIndex())
-                                        .durationMinutes(lesson.getDurationMinutes())
-                                        .build())
-                                .toList() : null)
-                        .enrollmentCount(enrollmentRepo.findByCourseId(
-                                        entity.getCourse().getId()).size())
+                                .email(entity.getCourse().getInstructor().getEmail())
+                                .build() : null)
                         .build() : null)
                 .enrolledAt(entity.getEnrolledAt())
                 .lastAccessedAt(entity.getLastAccessedAt())

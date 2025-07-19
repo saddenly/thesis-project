@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 public class EnrollmentResponse {
     private Long id;
     private SimpleUserDTO student;
-    private CourseResponse course;
+    private SimpleCourseDTO course;
     private LocalDateTime enrolledAt;
     private LocalDateTime lastAccessedAt;
     private Double progressPercentage;
