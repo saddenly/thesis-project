@@ -1,6 +1,8 @@
 package com.rustem.eduthesis.infrastructure.repository;
 
 import com.rustem.eduthesis.infrastructure.entity.CourseEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -20,4 +22,12 @@ public interface CourseRepository extends JpaRepository<CourseEntity, Long> {
     int countEnrollmentsByCourseId(@Param("courseId") Long courseId);
 
     List<CourseEntity> findByInstructorId(Long id);
+
+    List<CourseEntity> findByTitleContainingIgnoreCase(String title);
+
+    List<CourseEntity> findByInstructorIdAndPublishedTrue(Long instructorId);
+
+    boolean existsByTitleAndInstructorId(String title, Long instructorId);
+
+    long countByInstructorId(Long instructorId);
 }

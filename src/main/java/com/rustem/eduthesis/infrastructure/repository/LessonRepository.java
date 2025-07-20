@@ -12,7 +12,7 @@ import java.util.Optional;
 @Repository
 public interface LessonRepository extends JpaRepository<LessonEntity, Long> {
 
-    List<LessonEntity> findByCourse(CourseEntity course);
+    List<LessonEntity> findByCourseId(Long courseId);
 
     List<LessonEntity> findByCourseOrderByOrderIndexAsc(CourseEntity course);
 
@@ -24,4 +24,24 @@ public interface LessonRepository extends JpaRepository<LessonEntity, Long> {
     Optional<Integer> findMaxOrderIndexByCourseId(Long courseId);
 
     Boolean existsByIdAndCourseId(Long id, Long courseId);
+
+    Boolean existsByTitleAndCourseId(String title, Long courseId);
+
+    List<LessonEntity> findByTitleContainingIgnoreCase(String title);
+
+    Optional<LessonEntity> findByCourseIdAndOrderIndex(Long courseId, Integer orderIndex);
+
+    List<LessonEntity> findByContentContainingIgnoreCase(String content);
+
+    List<LessonEntity> findByOrderIndexGreaterThan(Integer orderIndex);
+
+    Boolean existsByCourseIdAndOrderIndex(Long courseId, Integer orderIndex);
+
+    Long countByCourseId(Long courseId);
+
+    List<LessonEntity> findByCourse_InstructorId(Long instructorId);
+
+    List<LessonEntity> findByVideoUrlIsNotNull();
+
+    List<LessonEntity> findByVideoUrlIsNull();
 }

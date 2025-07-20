@@ -17,9 +17,35 @@ public interface ProgressRepository extends JpaRepository<ProgressEntity, Long> 
 
     List<ProgressEntity> findByStudentIdAndCourseId(Long studentId, Long courseId);
 
+    Boolean existsByStudentIdAndLessonId(Long studentId, Long lessonId);
+
     List<ProgressEntity> findByStudentId(Long studentId);
 
+    List<ProgressEntity> findByLessonId(Long lessonId);
+
+    List<ProgressEntity> findByStudentIdAndCompleted(Long studentId, Boolean completed);
+
+    List<ProgressEntity> findByLesson_CourseId(Long courseId);
+
+    List<ProgressEntity> findByStudentIdAndLesson_CourseId(Long studentId, Long courseId);
+
+    List<ProgressEntity> findByStudent_Email(String email);
+
+    List<ProgressEntity> findByLesson_Course_InstructorId(Long instructorId);
+
+    List<ProgressEntity> findByCompletedTrue();
+
+    List<ProgressEntity> findByCompletedFalse();
+
+    Long countByStudentIdAndLesson_CourseId(Long studentId, Long courseId);
+
+    Long countByStudentIdAndLesson_CourseIdAndCompleted(Long studentId, Long courseId, Boolean completed);
+
+    Long countByLessonIdAndCompleted(Long lessonId, Boolean completed);
+
     Long countByStudentIdAndCourseIdAndCompletedTrue(Long studentId, Long courseId);
+
+    void deleteByStudentIdAndLessonId(Long studentId, Long lessonId);
 
     @Modifying
     @Query("DELETE FROM ProgressEntity p WHERE p.student.id = :studentId AND p.course.id = :courseId")
